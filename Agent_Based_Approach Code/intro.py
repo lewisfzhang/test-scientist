@@ -8,6 +8,10 @@ from mesa.space import MultiGrid
 from mesa.time import RandomActivation
 import numpy as np
 import matplotlib.pyplot as plt
+from mesa.visualization.modules import CanvasGrid
+from mesa.visualization.ModularVisualization import ModularServer
+from mesa.visualization.modules import ChartModule
+from mesa.visualization.UserParam import UserSettableParameter
 
 def compute_gini(model):
     agent_wealths = [agent.wealth for agent in model.schedule.agents]
@@ -98,19 +102,46 @@ class MoneyAgent(Agent):
 # one_agent_wealth.Wealth.plot()
 # plt.show()
 
-fixed_params = {"width": 10,
-                "height": 10}
-variable_params = {"N": range(10, 500, 10)}
+# fixed_params = {"width": 10,
+#                 "height": 10}
+# variable_params = {"N": range(10, 500, 10)}
+#
+# batch_run = BatchRunner(MoneyModel,
+#                         fixed_parameters=fixed_params,
+#                         variable_parameters=variable_params,
+#                         iterations=5,
+#                         max_steps=100,
+#                         model_reporters={"Gini": compute_gini})
+# batch_run.run_all()
+#
+# run_data = batch_run.get_model_vars_dataframe()
+# run_data.head()
+# plt.scatter(run_data.N, run_data.Gini)
+# plt.show()
 
-batch_run = BatchRunner(MoneyModel,
-                        fixed_parameters=fixed_params,
-                        variable_parameters=variable_params,
-                        iterations=5,
-                        max_steps=100,
-                        model_reporters={"Gini": compute_gini})
-batch_run.run_all()
+def agent_portrayal(agent):
+    portrayal = {"Shape": "circle",
+                 "Filled": "true",
+                 "r": 0.5}
 
-run_data = batch_run.get_model_vars_dataframe()
-run_data.head()
-plt.scatter(run_data.N, run_data.Gini)
-plt.show()
+    if agent.wealth > 0:
+        portrayal["Color"] = "red"
+        portrayal["Layer"] = 0
+    else:
+        portrayal["Color"] = "grey"
+        portrayal["Layer"] = 1
+        portrayal["r"] = 0.2
+    return portrayal
+
+grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
+n_slider = UserSettableParameter('slider', "Number of Agents", 100, 2, 200, 1)
+chart = ChartModule([{"Label": "Gini",
+                      "Color": "Black"}],
+                    data_collector_name='datacollector')
+server = ModularServer(MoneyModel,
+                       [grid, chart],
+                       "Money Model",
+                       {"N": n_slider, "width": 10, "height": 10})
+
+server.port = 8521
+server.launch()

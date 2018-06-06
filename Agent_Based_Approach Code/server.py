@@ -16,3 +16,5 @@ server = ModularServer(MoneyModel,
                        [grid],
                        "Money Model",
                        {"N": 100, "width": 10, "height": 10})
+server.port = 8521
+server.launch()
