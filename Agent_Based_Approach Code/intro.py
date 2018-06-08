@@ -75,9 +75,9 @@ class MoneyAgent(Agent):
             self.give_money()
 
 
-# model = MoneyModel(50,10,10)
-# for i in range(20):
-#     model.step()
+model = MoneyModel(50,10,10)
+for i in range(20):
+    model.step()
 # agent_counts = np.zeros((model.grid.width, model.grid.height))
 # for cell in model.grid.coord_iter():
 #     cell_content, x, y = cell
@@ -91,8 +91,8 @@ class MoneyAgent(Agent):
 # gini.plot()
 # plt.show()
 
-# agent_wealth = model.datacollector.get_agent_vars_dataframe()
-# print(agent_wealth.to_string())
+agent_wealth = model.datacollector.get_agent_vars_dataframe()
+print(agent_wealth.to_string())
 #
 # end_wealth = agent_wealth.xs(10, level="Step")["Wealth"]
 # end_wealth.hist(bins=range(agent_wealth.Wealth.max()+1))
@@ -118,30 +118,30 @@ class MoneyAgent(Agent):
 # run_data.head()
 # plt.scatter(run_data.N, run_data.Gini)
 # plt.show()
-
-def agent_portrayal(agent):
-    portrayal = {"Shape": "circle",
-                 "Filled": "true",
-                 "r": 0.5}
-
-    if agent.wealth > 0:
-        portrayal["Color"] = "red"
-        portrayal["Layer"] = 0
-    else:
-        portrayal["Color"] = "grey"
-        portrayal["Layer"] = 1
-        portrayal["r"] = 0.2
-    return portrayal
-
-grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
-n_slider = UserSettableParameter('slider', "Number of Agents", 100, 2, 200, 1)
-chart = ChartModule([{"Label": "Gini",
-                      "Color": "Black"}],
-                    data_collector_name='datacollector')
-server = ModularServer(MoneyModel,
-                       [grid, chart],
-                       "Money Model",
-                       {"N": n_slider, "width": 10, "height": 10})
-
-server.port = 8521
-server.launch()
+#
+# def agent_portrayal(agent):
+#     portrayal = {"Shape": "circle",
+#                  "Filled": "true",
+#                  "r": 0.5}
+#
+#     if agent.wealth > 0:
+#         portrayal["Color"] = "red"
+#         portrayal["Layer"] = 0
+#     else:
+#         portrayal["Color"] = "grey"
+#         portrayal["Layer"] = 1
+#         portrayal["r"] = 0.2
+#     return portrayal
+#
+# grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
+# n_slider = UserSettableParameter('slider', "Number of Agents", 100, 2, 200, 1)
+# chart = ChartModule([{"Label": "Gini",
+#                       "Color": "Black"}],
+#                     data_collector_name='datacollector')
+# server = ModularServer(MoneyModel,
+#                        [grid, chart],
+#                        "Money Model",
+#                        {"N": n_slider, "width": 10, "height": 10})
+#
+# server.port = 8521
+# server.launch()
